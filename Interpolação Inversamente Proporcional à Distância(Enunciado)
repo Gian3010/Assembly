@@ -1,0 +1,39 @@
+Enunciado
+
+Implemente um programa que leia dois números de ponto flutuante do teclado (não precisa
+fazer controle se foi entrado número ou não) e um número inteiro que indique a quantidade
+de espaços a serem interpolados entre os dois números (valor entre 1 e 10, não precisa
+fazer controle da entrada válida).
+Após isso, o programa deve calcular o valor dos números a serem interpolados com base
+nos dois números iniciais lidos de modo inversamente proporcional à distância entre o
+número estimado e os valores conhecidos.
+Ao final, o programa deve imprimir o intervalo completo de todos os números, incluindo os
+números dados. Todos os números devem aparecer com precisão de 3 dígitos após o ponto,
+arredondando para o valor mais próximo.
+Use a seguinte fórmula para o cálculo dos valores não conhecidos:
+p = (i*y+j*x)/(x+y), onde
+i e j são os valores dos número de ponto flutuantes dados, x e y são a distância de p a i e j,
+respectivamente.
+Faça o cálculo dos pontos flutuantes com precisão simples e da maneira que aparece na
+expressão dada para evitar diferenças de arredondamento.
+
+O programa deve ser implementado em assembly do MIPS e deve ser compilado pelo
+software SPIM.
+O envio deve ser realizado pela plataforma do Judge.
+O trabalho é individual.
+Não coloque nenhuma string de ajuda, como por exemplo: “Digite a string de entrada: ” ou
+“A string de entrada possui “. As entradas e saídas devem ser lidas e escritas diretamente.
+
+Exemplo 1
+
+&gt; 10.0
+&gt; 20.0
+&gt; 4
+&gt; 10.00 12.00 14.00 16.00 18.00 20.00
+
+Exemplo 2
+
+&gt; 10.0
+&gt; 20.0
+&gt; 5
+&gt; 10.00 11.67 13.33 15.00 16.67 18.33 20.00
