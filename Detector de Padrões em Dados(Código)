@@ -1,0 +1,414 @@
+.data
+    valores:    .space 20
+    contagem:   .space 24
+    entrada:    .space 100
+ 
+    m_quina:     .asciiz "quina de "
+    m_quadra:    .asciiz "quadra de "
+    m_seq:       .asciiz "sequencia de "
+    m_limite:    .asciiz " a "
+    m_full:      .asciiz "trinca de "
+    m_link:      .asciiz " e par de "
+    m_trip:      .asciiz "trinca de "
+    m_duplas:    .asciiz "dois pares de "
+    m_conj:      .asciiz " e "
+    m_umpar:     .asciiz "par de "
+    m_vazio:     .asciiz "nada"
+    m_nova:      .asciiz "\n"
+ 
+.text
+.globl main
+main:
+    la $a0, entrada
+    li $a1, 100
+    li $v0, 8
+    syscall
+ 
+    la $a0, entrada
+    jal extrair
+ 
+    la $a0, valores
+    jal ordenar_lista
+ 
+    la $t0, contagem
+    sw $zero, 0($t0)
+    sw $zero, 4($t0)
+    sw $zero, 8($t0)
+    sw $zero, 12($t0)
+    sw $zero, 16($t0)
+    sw $zero, 20($t0)
+ 
+    li $t1, 0
+loop_conta:
+    bge $t1, 5, fim_conta
+    sll $t2, $t1, 2
+    la $t3, valores
+    add $t3, $t3, $t2
+    lw $t4, 0($t3)
+    addi $t5, $t4, -1
+    sll $t5, $t5, 2
+    la $t6, contagem
+    add $t6, $t6, $t5
+    lw $t7, 0($t6)
+    addi $t7, $t7, 1
+    sw $t7, 0($t6)
+    addi $t1, $t1, 1
+    j loop_conta
+ 
+fim_conta:
+ 
+    jal eh_quina
+    beq $v0, 1, concluir
+ 
+    jal eh_quadra
+    beq $v0, 1, concluir
+ 
+    jal eh_seq
+    beq $v0, 1, concluir
+ 
+    jal eh_trinca_dupla
+    beq $v0, 1, concluir
+ 
+    jal eh_trinca
+    beq $v0, 1, concluir
+ 
+    jal eh_2pares
+    beq $v0, 1, concluir
+ 
+    jal eh_umpar
+    beq $v0, 1, concluir
+ 
+    la $a0, m_vazio
+    li $v0, 4
+    syscall
+ 
+concluir:
+    la $a0, m_nova
+    li $v0, 4
+    syscall
+    li $v0, 10
+    syscall
+ 
+extrair:
+    move $t0, $a0
+    li $t1, 0
+    li $t8, 0
+read_loop:
+    lb $t2, 0($t0)
+    beq $t2, 0, salva_final
+    beq $t2, 10, salva_final
+    beq $t2, 32, salva_parcial
+    blt $t2, 48, avancar
+    bgt $t2, 57, avancar
+    addi $t2, $t2, -48
+    mul $t8, $t8, 10
+    add $t8, $t8, $t2
+    j avancar
+ 
+salva_parcial:
+    beqz $t8, avancar
+    sll $t3, $t1, 2
+    la $t4, valores
+    add $t4, $t4, $t3
+    sw $t8, 0($t4)
+    addi $t1, $t1, 1
+    li $t8, 0
+    j avancar
+ 
+avancar:
+    addi $t0, $t0, 1
+    j read_loop
+ 
+salva_final:
+    beqz $t8, fim_ex
+    sll $t3, $t1, 2
+    la $t4, valores
+    add $t4, $t4, $t3
+    sw $t8, 0($t4)
+fim_ex:
+    jr $ra
+ 
+eh_quina:
+    li $t0, 0
+q_loop:
+    bge $t0, 6, q_nao
+    la $t1, contagem
+    sll $t2, $t0, 2
+    add $t1, $t1, $t2
+    lw $t3, 0($t1)
+    li $t4, 5
+    beq $t3, $t4, q_sim
+    addi $t0, $t0, 1
+    j q_loop
+q_nao:
+    li $v0, 0
+    jr $ra
+q_sim:
+    la $a0, m_quina
+    li $v0, 4
+    syscall
+    addi $a0, $t0, 1
+    li $v0, 1
+    syscall
+    li $v0, 1
+    jr $ra
+ 
+eh_quadra:
+    li $t0, 0
+qd_loop:
+    bge $t0, 6, qd_n
+    la $t1, contagem
+    sll $t2, $t0, 2
+    add $t1, $t1, $t2
+    lw $t3, 0($t1)
+    li $t4, 4
+    beq $t3, $t4, qd_s
+    addi $t0, $t0, 1
+    j qd_loop
+qd_n:
+    li $v0, 0
+    jr $ra
+qd_s:
+    la $a0, m_quadra
+    li $v0, 4
+    syscall
+    addi $a0, $t0, 1
+    li $v0, 1
+    syscall
+    li $v0, 1
+    jr $ra
+ 
+eh_seq:
+    lw $t0, valores
+    lw $t1, valores+4
+    lw $t2, valores+8
+    lw $t3, valores+12
+    lw $t4, valores+16
+    beq $t0, 1, s_15
+    beq $t0, 2, s_26
+    li $v0, 0
+    jr $ra
+ 
+s_15:
+    bne $t1, 2, s_f
+    bne $t2, 3, s_f
+    bne $t3, 4, s_f
+    bne $t4, 5, s_f
+    la $a0, m_seq
+    li $v0, 4
+    syscall
+    li $a0, 1
+    li $v0, 1
+    syscall
+    la $a0, m_limite
+    li $v0, 4
+    syscall
+    li $a0, 5
+    li $v0, 1
+    syscall
+    li $v0, 1
+    jr $ra
+ 
+s_26:
+    bne $t1, 3, s_f
+    bne $t2, 4, s_f
+    bne $t3, 5, s_f
+    bne $t4, 6, s_f
+    la $a0, m_seq
+    li $v0, 4
+    syscall
+    li $a0, 2
+    li $v0, 1
+    syscall
+    la $a0, m_limite
+    li $v0, 4
+    syscall
+    li $a0, 6
+    li $v0, 1
+    syscall
+    li $v0, 1
+    jr $ra
+ 
+s_f:
+    li $v0, 0
+    jr $ra
+ 
+eh_trinca_dupla:
+    li $t0, 0
+    li $s0, -1
+    li $s1, -1
+tp_loop:
+    bge $t0, 6, tp_chk
+    la $t1, contagem
+    sll $t2, $t0, 2
+    add $t1, $t1, $t2
+    lw $t3, 0($t1)
+    li $t4, 3
+    beq $t3, $t4, tp_t
+    li $t4, 2
+    beq $t3, $t4, tp_p
+    addi $t0, $t0, 1
+    j tp_loop
+ 
+tp_t:
+    move $s0, $t0
+    addi $t0, $t0, 1
+    j tp_loop
+ 
+tp_p:
+    move $s1, $t0
+    addi $t0, $t0, 1
+    j tp_loop
+ 
+tp_chk:
+    blt $s0, 0, tp_no
+    blt $s1, 0, tp_no
+ 
+    la $a0, m_full
+    li $v0, 4
+    syscall
+ 
+    addi $a0, $s0, 1
+    li $v0, 1
+    syscall
+ 
+    la $a0, m_link
+    li $v0, 4
+    syscall
+ 
+    addi $a0, $s1, 1
+    li $v0, 1
+    syscall
+ 
+    li $v0, 1
+    jr $ra
+ 
+tp_no:
+    li $v0, 0
+    jr $ra
+ 
+eh_trinca:
+    li $t0, 0
+tr_l:
+    bge $t0, 6, tr_n
+    la $t1, contagem
+    sll $t2, $t0, 2
+    add $t1, $t1, $t2
+    lw $t3, 0($t1)
+    li $t4, 3
+    beq $t3, $t4, tr_s
+    addi $t0, $t0, 1
+    j tr_l
+ 
+tr_n:
+    li $v0, 0
+    jr $ra
+ 
+tr_s:
+    la $a0, m_trip
+    li $v0, 4
+    syscall
+    addi $a0, $t0, 1
+    li $v0, 1
+    syscall
+    li $v0, 1
+    jr $ra
+ 
+eh_2pares:
+    li $t0, 0
+    li $s2, -1
+    li $s3, -1
+dp_l:
+    bge $t0, 6, dp_chk
+    la $t1, contagem
+    sll $t2, $t0, 2
+    add $t1, $t1, $t2
+    lw $t3, 0($t1)
+    li $t4, 2
+    bne $t3, $t4, dp_n
+    blt $s2, 0, dp_f
+    move $s3, $t0
+dp_n:
+    addi $t0, $t0, 1
+    j dp_l
+ 
+dp_f:
+    move $s2, $t0
+    addi $t0, $t0, 1
+    j dp_l
+ 
+dp_chk:
+    blt $s2, 0, dp_no
+    blt $s3, 0, dp_no
+    la $a0, m_duplas
+    li $v0, 4
+    syscall
+    addi $a0, $s2, 1
+    li $v0, 1
+    syscall
+    la $a0, m_conj
+    li $v0, 4
+    syscall
+    addi $a0, $s3, 1
+    li $v0, 1
+    syscall
+    li $v0, 1
+    jr $ra
+ 
+dp_no:
+    li $v0, 0
+    jr $ra
+ 
+eh_umpar:
+    li $t0, 0
+p_l:
+    bge $t0, 6, p_no
+    la $t1, contagem
+    sll $t2, $t0, 2
+    add $t1, $t1, $t2
+    lw $t3, 0($t1)
+    li $t4, 2
+    beq $t3, $t4, p_s
+    addi $t0, $t0, 1
+    j p_l
+ 
+p_no:
+    li $v0, 0
+    jr $ra
+ 
+p_s:
+    la $a0, m_umpar
+    li $v0, 4
+    syscall
+    addi $a0, $t0, 1
+    li $v0, 1
+    syscall
+    li $v0, 1
+    jr $ra
+ 
+ordenar_lista:
+    li $t0, 0
+out_l:
+    bge $t0, 4, out_e
+    addi $t1, $t0, 1
+in_l:
+    bge $t1, 5, prox
+    sll $t2, $t0, 2
+    la $t3, valores
+    add $t2, $t2, $t3
+    lw $t4, 0($t2)
+    sll $t5, $t1, 2
+    la $t6, valores
+    add $t5, $t5, $t6
+    lw $t7, 0($t5)
+    ble $t4, $t7, no_sw
+    sw $t7, 0($t2)
+    sw $t4, 0($t5)
+no_sw:
+    addi $t1, $t1, 1
+    j in_l
+prox:
+    addi $t0, $t0, 1
+    j out_l
+out_e:
+    jr $ra
