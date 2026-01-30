@@ -1,0 +1,117 @@
+.data
+prompt1:    .asciiz "Nome do primeiro jogador: "
+prompt2:    .asciiz "Nome do segundo jogador: "
+open_par:   .asciiz "("
+close_par:  .asciiz ") "
+colon_sp:   .asciiz ": "
+vencedor_s: .asciiz "Vencedor: "
+name1_raw:  .space 64
+name2_raw:  .space 64
+name1:      .space 13
+name2:      .space 13
+ 
+.text
+.globl main
+main:
+    la $a0, prompt1
+    li $v0, 4
+    syscall
+    la $a0, name1_raw
+    li $a1, 64
+    li $v0, 8
+    syscall
+    la $a0, name1_raw
+    la $a1, name1
+    li $a2, 12
+    jal copy_and_trim
+    la $a0, prompt2
+    li $v0, 4
+    syscall
+    la $a0, name2_raw
+    li $a1, 64
+    li $v0, 8
+    syscall
+    la $a0, name2_raw
+    la $a1, name2
+    li $a2, 12
+    jal copy_and_trim
+    li $s0, 0
+    li $s1, 1
+game_loop:
+    la $a0, open_par
+    li $v0, 4
+    syscall
+    move $a0, $s0
+    li $v0, 1
+    syscall
+    la $a0, close_par
+    li $v0, 4
+    syscall
+    beq $s1, 1, print_name1
+    la $a0, name2
+    li $v0, 4
+    syscall
+    j after_name_print
+print_name1:
+    la $a0, name1
+    li $v0, 4
+    syscall
+after_name_print:
+    la $a0, colon_sp
+    li $v0, 4
+    syscall
+    li $v0, 5
+    syscall
+    move $t0, $v0
+    addi $t1, $s0, 10
+    ble $t0, $s0, invalid_choice
+    add $t2, $t1, $zero
+    slt $t3, $t1, $t0
+    bne $t3, $zero, invalid_choice
+    li $t4, 100
+    slt $t5, $t4, $t0
+    bne $t5, $zero, invalid_choice
+    move $s0, $t0
+    li $t6, 100
+    beq $s0, $t6, declare_winner
+    beq $s1, 1, set_player2
+    li $s1, 1
+    j game_loop
+set_player2:
+    li $s1, 2
+    j game_loop
+invalid_choice:
+    j game_loop
+declare_winner:
+    la $a0, vencedor_s
+    li $v0, 4
+    syscall
+    beq $s1, 1, win_name1
+    la $a0, name2
+    li $v0, 4
+    syscall
+    j exit_prog
+win_name1:
+    la $a0, name1
+    li $v0, 4
+    syscall
+exit_prog:
+    li $v0, 10
+    syscall
+ 
+copy_and_trim:
+    add $t0, $zero, $zero
+copy_loop:
+    lb $t1, 0($a0)
+    beq $t1, $zero, copy_done
+    li $t2, 10
+    beq $t1, $t2, copy_done
+    beq $t0, $a2, copy_done
+    sb $t1, 0($a1)
+    addi $a0, $a0, 1
+    addi $a1, $a1, 1
+    addi $t0, $t0, 1
+    j copy_loop
+copy_done:
+    sb $zero, 0($a1)
+    jr $ra
