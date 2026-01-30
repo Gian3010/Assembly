@@ -1,0 +1,106 @@
+.data
+space:   .asciiz " "
+newline: .asciiz "\n"
+c100:    .float 100.0
+c0_5:    .float 0.5
+c0:      .float 0.0
+ 
+.text
+.globl main
+ 
+main:
+    li $v0,6
+    syscall
+    mov.s $f10,$f0
+ 
+    li $v0,6
+    syscall
+    mov.s $f11,$f0
+ 
+    li $v0,5
+    syscall
+    move $s0,$v0
+ 
+    mtc1 $s0,$f2
+    cvt.s.w $f2,$f2
+    li.s $f3,1.0
+    add.s $f2,$f2,$f3
+ 
+    sub.s $f4,$f11,$f10
+    div.s $f5,$f4,$f2
+ 
+    li $t0,0
+    addi $t1,$s0,1
+ 
+loop:
+    bgt $t0,$t1,done
+ 
+    mtc1 $t0,$f6
+    cvt.s.w $f6,$f6
+    mul.s $f7,$f6,$f5
+    add.s $f12,$f10,$f7
+ 
+    jal print2
+ 
+    beq $t0,$t1,nospace
+    li $v0,4
+    la $a0,space
+    syscall
+ 
+nospace:
+    addi $t0,$t0,1
+    j loop
+ 
+done:
+    li $v0,4
+    la $a0,newline
+    syscall
+    li $v0,10
+    syscall
+ 
+print2:
+    la $t9,c0
+    lwc1 $f0,0($t9)
+    c.lt.s $f12,$f0
+    bc1f pos
+    li $v0,11
+    li $a0,45
+    syscall
+    neg.s $f12,$f12
+pos:
+    la $t9,c100
+    lwc1 $f1,0($t9)
+    mul.s $f2,$f12,$f1
+    la $t9,c0_5
+    lwc1 $f3,0($t9)
+    add.s $f2,$f2,$f3
+    trunc.w.s $f4,$f2
+    mfc1 $t2,$f4
+ 
+    li $t9,100
+    div $t2,$t9
+    mflo $t3
+    mfhi $t4
+ 
+    li $v0,1
+    move $a0,$t3
+    syscall
+ 
+    li $v0,11
+    li $a0,46
+    syscall
+ 
+    li $t5,10
+    div $t4,$t5
+    mflo $t6
+    mfhi $t7
+ 
+    li $v0,1
+    move $a0,$t6
+    syscall
+ 
+    li $v0,1
+    move $a0,$t7
+    syscall
+    
+    jr $ra
