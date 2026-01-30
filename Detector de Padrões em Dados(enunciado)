@@ -1,0 +1,40 @@
+Enunciado
+
+Implemente um verificador de placar de um jogo de rolagem de dados. Como entrada, o
+programa deve receber o valor de 5 dados de 6 faces. Assuma que a entrada do usuário está
+correta e sempre contém os 5 números de 1 a 6 separados por espaços.
+Como saída, o programa deve imprimir o resultado entre as opções abaixo:
+- quina: cinco dados iguais
+- quadra: quatro dados iguais e um diferente dos quatro.
+- sequência: os cinco dados formam uma sequência de 1 a 5 ou 2 a 6.
+- trinca e par: três dados iguais e outros dois com outro valor, mas iguais entre si.
+- trinca: três dados iguais e outros dois com dois valores diferentes, inclusive entre si.
+- dois pares: dois pares de dados de valores iguais, mas diferentes entre si e um quinto dado
+com outro valor.
+- par: dois dados iguais e outros três com três valores diferentes, inclusive entre si.
+- nada: nenhum dos resultados anteriores foi atingido.
+
+Além do resultado alcançado, o programa também deve imprimir os valores dos dados que
+levaram ao resultado (sem acentos e tudo em minúsculas), com exceção de “nada” conforme
+os exemplos abaixo:
+- quina de 5
+- quadra de 4
+- sequencia de 1 a 5
+- trinca de 3 e par de 2
+- trinca de 6
+- dois pares de 2 e 4 (colocar o valor menor antes do maior, não usar 4 e 2 neste caso)
+- par de 1
+O programa deve ser implementado em assembly do MIPS e deve ser compilado pelo
+software SPIM.
+O envio deve ser realizado pela plataforma do Judge.
+O trabalho é individual.
+Não coloque nenhuma string de ajuda, como por exemplo: “Digite os números de entrada: ”
+ou “O resultado foi “.
+Nos exemplos abaixo, o texto em vermelho é digitado pelos jogadores.
+Exemplo 1
+-> 2 3 4 5 6
+-> sequencia de 2 a 6
+
+Exemplo 2
+-> 1 2 4 6 1
+-> par de 1
