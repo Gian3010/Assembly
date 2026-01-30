@@ -1,0 +1,71 @@
+Enunciado
+
+Implemente uma parida do jogo soma 10. O jogo soma 10 é jogado por 2 jogadores que
+alternal a vez de jogar. O primeiro jogador escolhe um número de 1 a 10. Então o segundo
+jogador soma 1 a 10 ao número que o primeiro jogador escolheu. Depois, o primeiro
+jogador soma mais um número de 1 a 10 ao total e assim sucessivamente até que um dos
+jogadores escolhe o número 100. O jogador que escolher o número 100 ganha a partida.
+Ao iníciar o programa, ele deve solicitar os nomes do primeiro e do segundo jogador com os
+textos:
+‘Nome do primeiro jogador: ’
+‘Nome do segundo jogador: ’
+Os nomes são limitados a 12 caracteres, mas não é necessário fazer controle desse limite.
+Caso o nome seja maior, use os 12 primeiros caracteres do nome de cada jogador.
+Depois de ler os nomes, o jogo inicia automaticamente a partida com o primeiro jogador
+escolhendo um número, alternando a vez de cada um até que o número 100 seja escolhido.
+Não é necessário fazer controle, se o jogador digitou um número, mas o número digitado
+deve ser validado conforme as instruções a seguir.
+Para cada vez de um jogador, o programa deve imprimir o número atual entre parẽnteses e
+o nome do jogador que deve escolher o número, seguido de ‘:’ e um espaço. Caso o jogador
+escolha um número inválido, o programa deve solicitar novamente ao mesmo jogador um
+número válido, mas sem imprimir uma mensagem de erro. Não podem ser escolhidos
+números maiores que 100.
+Ao final da partida, uma mensagem deve dizer qual o jogador vitorioso com a mensagem:
+‘Vencedor: “Jogador 1”’
+Depois disso, o programa deve ser encerrado.
+
+O programa deve ser implementado em assembly do MIPS e deve ser compilado pelo
+software SPIM.
+O envio deve ser realizado pela plataforma do Judge.
+O trabalho é individual.
+Não coloque nenhuma string de ajuda, como por exemplo: “Digite a string de entrada: ” ou
+“A string de entrada possui “. As entradas e saídas devem ser lidas e escritas diretamente.
+
+Nos exemplos abaixo, o texto em vermelho é digitado pelos jogadores.
+Exemplo 1
+
+&gt; Nome do primeiro jogador: Manuel
+&gt; Nome do segundo jogador: Maria
+&gt; (0) Manuel: 9
+&gt; (9) Maria: 17
+&gt; (17) Manuel: 27
+&gt; (27) Maria: 35
+&gt; (35) Manuel: 44
+&gt; (44) Maria: 52
+&gt; (52) Manuel: 62
+&gt; (62) Maria: 71
+&gt; (71) Manuel: 80
+&gt; (80) Maria: 88
+&gt; (88) Manuel: 90
+&gt; (90) Maria: 100
+&gt; Vencedor: Maria
+
+Exemplo 2
+
+&gt; Nome do primeiro jogador: Papibaquigrafo
+&gt; Nome do segundo jogador: Maria
+&gt; (0) Papibaquigra: 7
+&gt; (7) Maria: 17
+&gt; (17) Papibaquigra: 24
+&gt; (24) Maria: 32
+&gt; (32) Papibaquigra: 42
+&gt; (42) Maria: 52
+&gt; (52) Papibaquigra: 61
+&gt; (61) Maria: 70
+&gt; (70) Papibaquigra: 80
+&gt; (80) Maria: 86
+&gt; (86) Papibaquigra: 89
+&gt; (89) Maria: 100
+&gt; (89) Maria: 99
+&gt; (99) Papibaquigra: 100
+&gt; Vencedor: Papibaquigra
